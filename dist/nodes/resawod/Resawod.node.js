@@ -108,10 +108,10 @@ class Resawod {
                     description: 'Start date for the search',
                 },
                 {
-                    displayName: 'End Date',
-                    name: 'end',
-                    type: 'dateTime',
-                    default: '',
+                    displayName: 'Number of Days',
+                    name: 'days',
+                    type: 'number',
+                    default: 7,
                     displayOptions: {
                         show: {
                             resource: ['slot'],
@@ -119,7 +119,11 @@ class Resawod {
                         },
                     },
                     required: true,
-                    description: 'End date for the search',
+                    description: 'Number of days to search from the start date',
+                    typeOptions: {
+                        minValue: 1,
+                        maxValue: 365,
+                    },
                 },
                 {
                     displayName: 'Activity Calendar ID',
@@ -168,8 +172,26 @@ class Resawod {
                 if (resource === 'slot') {
                     if (operation === 'getAll') {
                         const start = this.getNodeParameter('start', i);
-                        const end = this.getNodeParameter('end', i);
-                        const response = await ResawodApiService_1.ResawodApiService.getActivitiesCalendar(nubappToken, credentials.applicationId, credentials.categoryActivityId, idUser, start, end, this.helpers.httpRequest);
+                        const days = this.getNodeParameter('days', i);
+                        const parseDate = (dateStr) => {
+                            if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+                                const [day, month, year] = dateStr.split('-').map(Number);
+                                return new Date(year, month - 1, day);
+                            }
+                            return new Date(dateStr);
+                        };
+                        const startDate = parseDate(start);
+                        const endDate = new Date(startDate);
+                        endDate.setDate(startDate.getDate() + days);
+                        const formatDate = (date) => {
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        };
+                        const startFormatted = formatDate(startDate);
+                        const endFormatted = formatDate(endDate);
+                        const response = await ResawodApiService_1.ResawodApiService.getActivitiesCalendar(nubappToken, credentials.applicationId, credentials.categoryActivityId, idUser, startFormatted, endFormatted, this.helpers.httpRequest);
                         returnData.push({ json: response });
                     }
                 }
