@@ -2,6 +2,10 @@ import { IHttpRequestMethods, IHttpRequestOptions } from 'n8n-workflow';
 export declare const RESASOCIAL_BASE_URL = "https://api.resasocial.com";
 export declare const LOGIN_ENDPOINT = "/user/login";
 export declare const LOGIN_METHOD: IHttpRequestMethods;
+export declare const NUBAPP_BASE_URL = "https://sport.nubapp.com/api/v4";
+export declare const APP_VERSION = "5.12.03";
+export declare const NUBAPP_ORIGIN = "user_apps";
+export declare const BOX_RESAWOD_URL = "https://box.resawod.com";
 export interface ResawodCredentials {
     username: string;
     password: string;

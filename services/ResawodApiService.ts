@@ -5,6 +5,11 @@ export const RESASOCIAL_BASE_URL = 'https://api.resasocial.com';
 export const LOGIN_ENDPOINT = '/user/login';
 export const LOGIN_METHOD = 'POST' as IHttpRequestMethods;
 
+export const NUBAPP_BASE_URL = 'https://sport.nubapp.com/api/v4';
+export const APP_VERSION = '5.12.03';
+export const NUBAPP_ORIGIN = 'user_apps';
+export const BOX_RESAWOD_URL = 'https://box.resawod.com';
+
 export interface ResawodCredentials {
 	username: string;
 	password: string;
@@ -175,9 +180,9 @@ export class ResawodApiService {
 	): Promise<unknown> {
 		const options: IHttpRequestOptions = {
 			method: 'POST' as IHttpRequestMethods,
-			url: 'https://sport.nubapp.com/api/v4/users/getUserFutureBookings.php',
+			url: `${NUBAPP_BASE_URL}/users/getUserFutureBookings.php`,
 			body: this.encodeFormData({
-				app_version: '5.12.03',
+				app_version: APP_VERSION,
 				id_application: applicationId,
 				id_user: idUser,
 				limit: limit,
@@ -187,9 +192,9 @@ export class ResawodApiService {
 				'Authorization': `Bearer ${nubappToken}`,
 				'Content-Type': 'application/x-www-form-urlencoded',
 				'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-				'nubapp-origin': 'user_apps',
-				'Origin': 'https://box.resawod.com',
-				'Referer': 'https://box.resawod.com/',
+				'nubapp-origin': NUBAPP_ORIGIN,
+				'Origin': BOX_RESAWOD_URL,
+				'Referer': `${BOX_RESAWOD_URL}/`,
 			},
 			returnFullResponse: false,
 		};
@@ -215,7 +220,15 @@ export class ResawodApiService {
 		httpRequest?: (options: IHttpRequestOptions) => Promise<unknown>,
 	): Promise<unknown> {
 		// Format dates as DD-MM-YYYY
+		// If already in DD-MM-YYYY format, use as-is
+		// If in ISO format (YYYY-MM-DD), convert it
 		const formatDate = (dateStr: string): string => {
+			// Check if already in DD-MM-YYYY format
+			if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+				return dateStr;
+			}
+			
+			// Otherwise, parse and format
 			const date = new Date(dateStr);
 			const day = String(date.getDate()).padStart(2, '0');
 			const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -228,9 +241,9 @@ export class ResawodApiService {
 
 		const options: IHttpRequestOptions = {
 			method: 'POST' as IHttpRequestMethods,
-			url: 'https://sport.nubapp.com/api/v4/activities/getActivitiesCalendar.php',
+			url: `${NUBAPP_BASE_URL}/activities/getActivitiesCalendar.php`,
 			body: this.encodeFormData({
-				app_version: '5.12.03',
+				app_version: APP_VERSION,
 				id_application: applicationId,
 				start_timestamp: startFormatted,
 				end_timestamp: endFormatted,
@@ -241,9 +254,9 @@ export class ResawodApiService {
 				'Authorization': `Bearer ${nubappToken}`,
 				'Content-Type': 'application/x-www-form-urlencoded',
 				'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-				'nubapp-origin': 'user_apps',
-				'Origin': 'https://box.resawod.com',
-				'Referer': 'https://box.resawod.com/',
+				'nubapp-origin': NUBAPP_ORIGIN,
+				'Origin': BOX_RESAWOD_URL,
+				'Referer': `${BOX_RESAWOD_URL}/`,
 			},
 			returnFullResponse: false,
 		};

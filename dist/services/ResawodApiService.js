@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResawodApiService = exports.LOGIN_METHOD = exports.LOGIN_ENDPOINT = exports.RESASOCIAL_BASE_URL = void 0;
+exports.ResawodApiService = exports.BOX_RESAWOD_URL = exports.NUBAPP_ORIGIN = exports.APP_VERSION = exports.NUBAPP_BASE_URL = exports.LOGIN_METHOD = exports.LOGIN_ENDPOINT = exports.RESASOCIAL_BASE_URL = void 0;
 exports.RESASOCIAL_BASE_URL = 'https://api.resasocial.com';
 exports.LOGIN_ENDPOINT = '/user/login';
 exports.LOGIN_METHOD = 'POST';
+exports.NUBAPP_BASE_URL = 'https://sport.nubapp.com/api/v4';
+exports.APP_VERSION = '5.12.03';
+exports.NUBAPP_ORIGIN = 'user_apps';
+exports.BOX_RESAWOD_URL = 'https://box.resawod.com';
 class ResawodApiService {
     static encodeFormData(data) {
         return Object.entries(data)
@@ -87,9 +91,9 @@ class ResawodApiService {
     static async getUserFutureBookings(nubappToken, applicationId, idUser, limit, httpRequest) {
         const options = {
             method: 'POST',
-            url: 'https://sport.nubapp.com/api/v4/users/getUserFutureBookings.php',
+            url: `${exports.NUBAPP_BASE_URL}/users/getUserFutureBookings.php`,
             body: this.encodeFormData({
-                app_version: '5.12.03',
+                app_version: exports.APP_VERSION,
                 id_application: applicationId,
                 id_user: idUser,
                 limit: limit,
@@ -99,9 +103,9 @@ class ResawodApiService {
                 'Authorization': `Bearer ${nubappToken}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'nubapp-origin': 'user_apps',
-                'Origin': 'https://box.resawod.com',
-                'Referer': 'https://box.resawod.com/',
+                'nubapp-origin': exports.NUBAPP_ORIGIN,
+                'Origin': exports.BOX_RESAWOD_URL,
+                'Referer': `${exports.BOX_RESAWOD_URL}/`,
             },
             returnFullResponse: false,
         };
@@ -113,6 +117,9 @@ class ResawodApiService {
     }
     static async getActivitiesCalendar(nubappToken, applicationId, categoryActivityId, idUser, startDate, endDate, httpRequest) {
         const formatDate = (dateStr) => {
+            if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+                return dateStr;
+            }
             const date = new Date(dateStr);
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -123,9 +130,9 @@ class ResawodApiService {
         const endFormatted = formatDate(endDate);
         const options = {
             method: 'POST',
-            url: 'https://sport.nubapp.com/api/v4/activities/getActivitiesCalendar.php',
+            url: `${exports.NUBAPP_BASE_URL}/activities/getActivitiesCalendar.php`,
             body: this.encodeFormData({
-                app_version: '5.12.03',
+                app_version: exports.APP_VERSION,
                 id_application: applicationId,
                 start_timestamp: startFormatted,
                 end_timestamp: endFormatted,
@@ -136,9 +143,9 @@ class ResawodApiService {
                 'Authorization': `Bearer ${nubappToken}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'nubapp-origin': 'user_apps',
-                'Origin': 'https://box.resawod.com',
-                'Referer': 'https://box.resawod.com/',
+                'nubapp-origin': exports.NUBAPP_ORIGIN,
+                'Origin': exports.BOX_RESAWOD_URL,
+                'Referer': `${exports.BOX_RESAWOD_URL}/`,
             },
             returnFullResponse: false,
         };

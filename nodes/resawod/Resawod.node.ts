@@ -113,10 +113,10 @@ export class Resawod implements INodeType {
 				description: 'Start date for the search',
 			},
 			{
-				displayName: 'End Date',
-				name: 'end',
-				type: 'dateTime',
-				default: '',
+				displayName: 'Number of Days',
+				name: 'days',
+				type: 'number',
+				default: 7,
 				displayOptions: {
 					show: {
 						resource: ['slot'],
@@ -124,7 +124,11 @@ export class Resawod implements INodeType {
 					},
 				},
 				required: true,
-				description: 'End date for the search',
+				description: 'Number of days to search from the start date',
+				typeOptions: {
+					minValue: 1,
+					maxValue: 365,
+				},
 			},
 			// Booking: Create Properties
 			{
@@ -182,15 +186,42 @@ export class Resawod implements INodeType {
 				if (resource === 'slot') {
 					if (operation === 'getAll') {
 						const start = this.getNodeParameter('start', i) as string;
-						const end = this.getNodeParameter('end', i) as string;
+						const days = this.getNodeParameter('days', i) as number;
+
+						// Parse date - handle both ISO (YYYY-MM-DD) and DD-MM-YYYY formats
+						const parseDate = (dateStr: string): Date => {
+							// If it's in DD-MM-YYYY format
+							if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+								const [day, month, year] = dateStr.split('-').map(Number);
+								return new Date(year, month - 1, day);
+							}
+							// Otherwise use standard parsing (ISO format or dateTime from n8n)
+							return new Date(dateStr);
+						};
+
+						// Calculate end date by adding days to start date
+						const startDate = parseDate(start);
+						const endDate = new Date(startDate);
+						endDate.setDate(startDate.getDate() + days);
+						
+						// Format dates as DD-MM-YYYY
+						const formatDate = (date: Date): string => {
+							const day = String(date.getDate()).padStart(2, '0');
+							const month = String(date.getMonth() + 1).padStart(2, '0');
+							const year = date.getFullYear();
+							return `${day}-${month}-${year}`;
+						};
+
+						const startFormatted = formatDate(startDate);
+						const endFormatted = formatDate(endDate);
 
 						const response = await ResawodApiService.getActivitiesCalendar(
 							nubappToken,
 							credentials.applicationId,
 							credentials.categoryActivityId,
 							idUser,
-							start,
-							end,
+							startFormatted,
+							endFormatted,
 							this.helpers.httpRequest,
 						);
 
