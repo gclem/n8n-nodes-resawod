@@ -280,9 +280,9 @@ n8n start
 
 ## Version History
 
-### 0.1.0 (Current)
+### 1.0.0 (Current)
 
-Initial release with the following features:
+First stable release with the following features:
 
 **Slot Operations:**
 - Get Many Slots with flexible date range
@@ -300,6 +300,7 @@ Initial release with the following features:
 - Service layer architecture for maintainability
 - Support for multiple date formats
 - Comprehensive error handling
+- Production-ready with complete documentation
 
 ## License
 
