@@ -1,15 +1,21 @@
 import {
 	IAuthenticateGeneric,
-	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
 } from 'n8n-workflow';
+import { 
+	RESASOCIAL_BASE_URL,
+	LOGIN_ENDPOINT,
+	LOGIN_METHOD,
+} from '../services/ResawodApiService';
 
 export class ResawodApi implements ICredentialType {
 	name = 'resawodApi';
+
+	icon = 'file:resawod.svg' as const;
 	displayName = 'Resawod API';
 	documentationUrl = 'https://github.com/loulasedna/Resawod_nubapp';
-	icon = 'file:resawod.svg' as const;
+	
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Username',
@@ -51,30 +57,15 @@ export class ResawodApi implements ICredentialType {
 		},
 	};
 
-	test: ICredentialTestRequest = {
+	test = {
 		request: {
-			baseURL: 'https://api.resasocial.com',
-			url: '/user/login',
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Origin': 'https://box.resawod.com',
-				'Referer': 'https://box.resawod.com/',
-			},
+			baseURL: RESASOCIAL_BASE_URL,
+			url: LOGIN_ENDPOINT,
+			method: LOGIN_METHOD,
 			body: {
 				username: '={{$credentials.username}}',
 				password: '={{$credentials.password}}',
 			},
 		},
-		rules: [
-			{
-				type: 'responseSuccessBody',
-				properties: {
-					key: 'jwt_token',
-					value: '',
-					message: 'Invalid credentials or JWT token not found in response',
-				},
-			},
-		],
 	};
 }
