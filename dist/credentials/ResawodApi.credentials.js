@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResawodApi = void 0;
+const ResawodApiService_1 = require("../services/ResawodApiService");
 class ResawodApi {
     constructor() {
         this.name = 'resawodApi';
+        this.icon = 'file:resawod.svg';
         this.displayName = 'Resawod API';
         this.documentationUrl = 'https://github.com/loulasedna/Resawod_nubapp';
-        this.icon = 'file:resawod.svg';
         this.properties = [
             {
                 displayName: 'Username',
@@ -48,29 +49,14 @@ class ResawodApi {
         };
         this.test = {
             request: {
-                baseURL: 'https://api.resasocial.com',
-                url: '/user/login',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Origin': 'https://box.resawod.com',
-                    'Referer': 'https://box.resawod.com/',
-                },
+                baseURL: ResawodApiService_1.RESASOCIAL_BASE_URL,
+                url: ResawodApiService_1.LOGIN_ENDPOINT,
+                method: ResawodApiService_1.LOGIN_METHOD,
                 body: {
                     username: '={{$credentials.username}}',
                     password: '={{$credentials.password}}',
                 },
             },
-            rules: [
-                {
-                    type: 'responseSuccessBody',
-                    properties: {
-                        key: 'jwt_token',
-                        value: '',
-                        message: 'Invalid credentials or JWT token not found in response',
-                    },
-                },
-            ],
         };
     }
 }
