@@ -161,6 +161,24 @@ The node automatically handles date parsing and converts them to the required AP
 
 ### Example Workflows
 
+#### Authentication Flow (For Reference)
+
+Si vous souhaitez comprendre le fonctionnement interne de l'authentification Resawod/Nubapp, un exemple de workflow complet est disponible dans le dossier [`examples/`](examples/). Ce workflow démontre la séquence de login et récupération de token en 4 étapes.
+
+**Note :** Ce workflow est fourni à titre éducatif uniquement. En utilisant le node **n8n-nodes-resawod**, toute cette authentification est gérée automatiquement pour vous.
+
+👉 [Voir l'exemple d'authentification](examples/README.md)
+
+#### Méthode Rapide : Utiliser le Node Resawod
+
+Au lieu de gérer manuellement l'authentification, utilisez simplement le node Resawod dans vos workflows :
+
+1. **Ajoutez le node Resawod** à votre workflow
+2. **Configurez vos credentials** une seule fois (username, password, applicationId, categoryActivityId)
+3. **Utilisez les opérations** directement (Get Slots, Create Booking, etc.)
+
+L'authentification, le rafraîchissement des tokens et toutes les requêtes API sont gérés automatiquement !
+
 #### 1. Daily Automatic Booking
 
 Automatically book your favorite class every day:
@@ -308,7 +326,7 @@ First stable release with the following features:
 
 ## Author
 
-Giovanni Clement
+gclem
 
 ## Contributing
 
